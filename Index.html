@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hospital Checker</title>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+  <h1>Hospital Information Checker</h1>
+  
+  <label for="location">Location:</label>
+  <select id="location"></select>
+  
+  <label for="resource">Health Care Resource:</label>
+  <select id="resource"></select>
+
+  <button onclick="fetchData()">Check</button>
+  
+  <h2>Results:</h2>
+  <div id="results"></div>
+
+  <script>
+    const apiURL = "https://script.google.com/a/macros/8medical.co/s/AKfycbxqrIrQgGwh-JrWqneLOC26WrfP3BBvExiL5b0vmJ60WkS_GKc2sbeie8vOJabLkwOE/exec";
+
+    // Fetch initial dropdown values
+    const locations = ["IKEJA", "MAITAMA"]; // Replace with dynamic values from your sheet
+    const resources = ["Hospital", "Clinic"]; // Replace with dynamic values from your sheet
+
+    const locationDropdown = document.getElementById("location");
+    const resourceDropdown = document.getElementById("resource");
+
+    // Populate dropdowns
+    locations.forEach(location => {
+      const option = document.createElement("option");
+      option.value = location;
+      option.text = location;
+      locationDropdown.appendChild(option);
+    });
+
+    resources.forEach(resource => {
+      const option = document.createElement("option");
+      option.value = resource;
+      option.text = resource;
+      resourceDropdown.appendChild(option);
+    });
+
+    function fetchData() {
+      const location = locationDropdown.value;
+      const resource = resourceDropdown.value;
+
+      axios.get(apiURL, { params: { location, resource } })
+        .then(response => {
+          const data = response.data;
+          const resultsDiv = document.getElementById("results");
+          resultsDiv.innerHTML = "";
+
+          data.forEach(item => {
+            const div = document.createElement("div");
+            div.textContent = `Name: ${item['Name of Organization']}, Location: ${item['Location']}`;
+            resultsDiv.appendChild(div);
+          });
+        })
+        .catch(error => console.error("Error fetching data:", error));
+    }
+  </script>
+</body>
+</html>
